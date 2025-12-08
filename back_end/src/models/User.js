@@ -12,7 +12,7 @@ export default (sequelize, DataTypes) => {
         foreignKey: 'role_id',
         as: 'role',
       });
-      User.hasMany(models.Comments, {
+      User.hasMany(models.Comment, {
         foreignKey: 'user_id',
         as: 'comments',
       });

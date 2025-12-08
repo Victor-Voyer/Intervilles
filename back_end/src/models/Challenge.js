@@ -16,7 +16,7 @@ export default (sequelize, DataTypes) => {
         foreignKey: 'challenge_id',
         as: 'participations',
       });
-      Challenge.hasMany(models.Comments, {
+      Challenge.hasMany(models.Comment, {
         foreignKey: 'challenge_id',
         as: 'comments',
       });
