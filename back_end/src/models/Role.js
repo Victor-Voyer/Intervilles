@@ -22,9 +22,7 @@ export default (sequelize, DataTypes) => {
         modelName: 'Role',
         tableName: 'roles',
         underscored: true,
-        timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
+        timestamps: false,
     }
   );
   return Role;

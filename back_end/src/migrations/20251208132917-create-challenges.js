@@ -29,6 +29,7 @@ module.exports = {
         references: {
           model: 'users',
           key: 'id',
+          onDelete: 'CASCADE',
         },
       },
       category_id: {
@@ -37,6 +38,7 @@ module.exports = {
         references: {
           model: 'categories',
           key: 'id',
+          onDelete: 'CASCADE',
         },
       },
       start_date: {

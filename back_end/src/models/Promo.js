@@ -29,9 +29,7 @@ export default (sequelize, DataTypes) => {
         modelName: 'Promo',
         tableName: 'promos',
         underscored: true,
-        timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
+        timestamps: false,
     }
   );
   return Promo;
