@@ -43,9 +43,7 @@ export default (sequelize, DataTypes) => {
       modelName: 'Participation',
       tableName: 'participations',
       underscored: true,
-      timestamps: true,
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
+      timestamps: false,
     }
   );
   return Participation;
