@@ -1,0 +1,44 @@
+'use strict';
+
+import { Model } from 'sequelize';
+export default (sequelize, DataTypes) => {
+  class ChatMessage extends Model {
+    static associate(models) {
+      ChatMessage.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        as: 'user',
+      });
+    }
+  }
+  ChatMessage.init(
+    {
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+      },
+      content: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.literal('CURRENT_TIMESTAMP'),
+      },
+    },
+    {
+      sequelize,
+      modelName: 'ChatMessage',
+      tableName: 'chat_messages',
+      underscored: true,
+      timestamps: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    }
+);
+  return ChatMessage;
+};  
