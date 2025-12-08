@@ -22,9 +22,7 @@ export default (sequelize, DataTypes) => {
         modelName: 'Category',
         tableName: 'categories',
         underscored: true,
-        timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
+        timestamps: false,
     }
   );
   return Category;
