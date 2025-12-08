@@ -16,7 +16,7 @@ export default (sequelize, DataTypes) => {
         foreignKey: 'user_id',
         as: 'comments',
       });
-      User.hasMany(models.Participations, {
+      User.hasMany(models.Participation, {
         foreignKey: 'user_id',
         as: 'participations',
       });
