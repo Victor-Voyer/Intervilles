@@ -1,9 +1,7 @@
-import jwt from 'jsonwebtoken';
 import db from '../models/index.js';
+import { verifyToken } from '../utils/jwt.util.js';
 
 const { User, Role } = db;
-
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 
 export const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization || '';
@@ -17,7 +15,7 @@ export const authMiddleware = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = verifyToken(token);
     req.user = {
       id: decoded.id,
       role: decoded.role,

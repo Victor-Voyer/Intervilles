@@ -1,11 +1,21 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import db from '../models/index.js';
+import { signToken } from '../utils/jwt.util.js';
 
 const { User, Role, Promo } = db;
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 const SALT_ROUNDS = 10;
+
+const isPasswordStrongEnough = (password) => {
+  if (typeof password !== 'string') return false;
+
+  const minLength = 8;
+  const hasMinLength = password.length >= minLength;
+  const hasLetter = /[A-Za-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+
+  return hasMinLength && hasLetter && hasNumber;
+};
 
 export const register = async (req, res) => {
   try {
@@ -13,6 +23,13 @@ export const register = async (req, res) => {
 
     if (!username || !email || !password || !promo_id) {
       return res.status(400).json({ message: 'Champs manquants' });
+    }
+
+    if (!isPasswordStrongEnough(password)) {
+      return res.status(400).json({
+        message:
+          'Mot de passe trop faible (minimum 8 caractères, avec au moins une lettre et un chiffre)',
+      });
     }
 
     const existing = await User.findOne({ where: { email } });
@@ -79,14 +96,10 @@ export const login = async (req, res) => {
       return res.status(403).json({ message: 'Compte en attente de validation' });
     }
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        role: user.role ? user.role.name : 'USER',
-      },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const token = signToken({
+      id: user.id,
+      role: user.role ? user.role.name : 'USER',
+    });
 
     return res.json({
       token,
