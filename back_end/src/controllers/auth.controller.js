@@ -6,31 +6,9 @@ const { User, Role, Promo } = db;
 
 const SALT_ROUNDS = 10;
 
-const isPasswordStrongEnough = (password) => {
-  if (typeof password !== 'string') return false;
-
-  const minLength = 8;
-  const hasMinLength = password.length >= minLength;
-  const hasLetter = /[A-Za-z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-
-  return hasMinLength && hasLetter && hasNumber;
-};
-
 export const register = async (req, res) => {
   try {
     const { username, first_name, last_name, email, password, promo_id } = req.body;
-
-    if (!username || !email || !password || !promo_id) {
-      return res.status(400).json({ message: 'Champs manquants' });
-    }
-
-    if (!isPasswordStrongEnough(password)) {
-      return res.status(400).json({
-        message:
-          'Mot de passe trop faible (minimum 8 caractères, avec au moins une lettre et un chiffre)',
-      });
-    }
 
     const existing = await User.findOne({ where: { email } });
     if (existing) {
@@ -72,10 +50,6 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email et mot de passe requis' });
-    }
 
     const user = await User.findOne({
       where: { email },
