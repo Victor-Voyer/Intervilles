@@ -1,39 +1,16 @@
-import bcrypt from 'bcrypt';
-import db from '../models/index.js';
-import { signToken } from '../utils/jwt.util.js';
-
-const { User, Role, Promo } = db;
-
-const SALT_ROUNDS = 10;
+import { registerUser, authenticateUser, createAuthToken } from '../services/auth.service.js';
 
 export const register = async (req, res) => {
   try {
     const { username, first_name, last_name, email, password, promo_id } = req.body;
 
-    const existing = await User.findOne({ where: { email } });
-    if (existing) {
-      return res.status(409).json({ message: 'Email déjà utilisé' });
-    }
-
-    const existingUsername = await User.findOne({ where: { username } });
-    if (existingUsername) {
-      return res.status(409).json({ message: 'Username déjà utilisé' });
-    }
-
-    const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-
-    const role = await Role.findOne({ where: { name: 'USER' } });
-
-    const user = await User.create({
+    const user = await registerUser({
       username,
       first_name,
       last_name,
       email,
-      password: hashed,
+      password,
       promo_id,
-      role_id: role ? role.id : null,
-      validated_at: null,
-      verified_at: null,
     });
 
     return res.status(201).json({
@@ -51,29 +28,9 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({
-      where: { email },
-      include: [{ model: Role, as: 'role' }],
-    });
+    const user = await authenticateUser({ email, password });
 
-    if (!user) {
-      return res.status(401).json({ message: 'Identifiants invalides' });
-    }
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res.status(401).json({ message: 'Identifiants invalides' });
-    }
-
-    // valid modo
-    if (!user.validated_at) {
-      return res.status(403).json({ message: 'Compte en attente de validation' });
-    }
-
-    const token = signToken({
-      id: user.id,
-      role: user.role ? user.role.name : 'USER',
-    });
+    const { token, roleName } = createAuthToken(user);
 
     return res.json({
       token,
@@ -81,7 +38,7 @@ export const login = async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        role: user.role ? user.role.name : 'USER',
+        role: roleName,
       },
     });
   } catch (err) {
