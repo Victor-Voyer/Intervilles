@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes.js';
-import { authMiddleware } from '../middlewares/auth.middleware.js';
-import { requireRole } from '../middlewares/requireRoles.js';
+import userRoutes from './user.routes.js';
 
 const router = Router();
 
-// Les routes /auth (register/login) restent publiques.
-router.use('/auth', authRoutes);
 
-export default router; 
+router.use('/auth', authRoutes);
+router.use('/users', userRoutes);
+
+export default router;

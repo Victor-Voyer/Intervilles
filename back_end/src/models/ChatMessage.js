@@ -27,7 +27,7 @@ export default (sequelize, DataTypes) => {
       date: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.literal('CURRENT_TIMESTAMP'),
+        defaultValue: DataTypes.NOW,
       },
     },
     {

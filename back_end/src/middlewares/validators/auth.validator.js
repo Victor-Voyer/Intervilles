@@ -1,40 +1,45 @@
-import { body } from 'express-validator';
+import { z } from 'zod';
+import { validateBody } from './zodValidate.js';
 
-const isPasswordStrongEnough = (password) => {
-  if (typeof password !== 'string') {
-    throw new Error('Mot de passe requis');
-  }
+const passwordSchema = z
+  .string({ required_error: 'Mot de passe requis' })
+  .min(
+    8,
+    'Mot de passe trop faible (minimum 8 caractères, avec au moins une lettre, un chiffre et un caractère spécial)'
+  )
+  .regex(/[A-Za-z]/, 'Le mot de passe doit contenir au moins une lettre')
+  .regex(/[0-9]/, 'Le mot de passe doit contenir au moins un chiffre')
+  .regex(
+    /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/,
+    'Le mot de passe doit contenir au moins un caractère spécial'
+  );
 
-  const minLength = 8;
-  const hasMinLength = password.length >= minLength;
-  const hasLetter = /[A-Za-z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+const registerSchema = z.object({
+  email: z.string({ required_error: 'Email requis' }).email('Email invalide'),
+  password: passwordSchema,
+  username: z
+    .string({ required_error: 'Nom d’utilisateur requis' })
+    .min(1, 'Nom d’utilisateur requis'),
+  first_name: z
+    .string({ required_error: 'Prénom requis' })
+    .min(1, 'Prénom requis'),
+  last_name: z.string({ required_error: 'Nom requis' }).min(1, 'Nom requis'),
+  promo_id: z.union([
+    z.number({ invalid_type_error: 'Promo requise' }),
+    z
+      .string()
+      .regex(/^\d+$/, 'Promo requise')
+      .transform((val) => Number(val)),
+  ]),
+});
 
-  if (!hasMinLength || !hasLetter || !hasNumber || !hasSpecialChar) {
-    throw new Error(
-      'Mot de passe trop faible (minimum 8 caractères, avec au moins une lettre, un chiffre et un caractère spécial)',
-    );
-  }
+const loginSchema = z.object({
+  email: z.string({ required_error: 'Email requis' }).email('Email invalide'),
+  password: z
+    .string({ required_error: 'Mot de passe requis' })
+    .min(1, 'Mot de passe requis'),
+});
 
-  return true;
-};
-
-// Validation d'enregistrement
-export const registerValidation = [
-  body('email').notEmpty().withMessage('Email requis').bail()
-    .isEmail().withMessage('Email invalide'),
-  body('password')
-    .notEmpty().withMessage('Mot de passe requis')
-    .bail()
-    .custom(isPasswordStrongEnough),
-  body('username').notEmpty().withMessage('Nom d’utilisateur requis'),
-  body('promo_id').notEmpty().withMessage('Promo requise'),
-];
-
-// Validation de connexion
-export const loginValidation = [
-  body('email').notEmpty().withMessage('Email requis').bail()
-    .isEmail().withMessage('Email invalide'),
-  body('password').notEmpty().withMessage('Mot de passe requis'),
-];
+// On garde la même API qu’avant pour les routes
+export const registerValidation = [validateBody(registerSchema)];
+export const loginValidation = [validateBody(loginSchema)];

@@ -35,7 +35,7 @@ export default (sequelize, DataTypes) => {
       joined_at: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.literal('CURRENT_TIMESTAMP'),
+        defaultValue: DataTypes.NOW,
       },
     },
     {
