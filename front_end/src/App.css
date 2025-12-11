@@ -68,6 +68,11 @@ body {
   opacity: 0.8;
 }
 
+.nav-link-active {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 /* Main Content */
 .main-content {
   flex: 1;

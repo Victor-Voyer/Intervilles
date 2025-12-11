@@ -1,0 +1,147 @@
+.profile-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.profile-title {
+  font-size: 2rem;
+  color: #1e40af;
+  margin: 0;
+}
+
+.profile-subtitle {
+  color: #6b7280;
+  margin: 0;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.profile-card {
+  background: white;
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.profile-card h3 {
+  margin: 0;
+  color: #1e40af;
+  font-size: 1.1rem;
+}
+
+.profile-meta {
+  display: grid;
+  gap: 0.35rem;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.profile-meta strong {
+  color: #111827;
+}
+
+.list-cards {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.item-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.9rem;
+  display: grid;
+  gap: 0.45rem;
+  background: #fff;
+}
+
+.item-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.item-card-title h4 {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.badge-open {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-in_progress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-closed {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.item-card p {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.item-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+  background: #fff;
+}
+
+.error-state {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.loading {
+  color: #4b5563;
+}
+
+@media (max-width: 768px) {
+  .profile-title {
+    font-size: 1.5rem;
+  }
+}
