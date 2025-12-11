@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import Challenges from '../components/Challenges.jsx'
+import Challenges from '../components/admin/Challenges.jsx'
 
 
 
