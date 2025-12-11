@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
+import ChallengeDetail from './pages/ChallengeDetail'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/challenges/:id" element={<ChallengeDetail />} />
         </Routes>
       </main>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import '../styles/ChallengesList.css'
 
 export function ChallengesList() {
@@ -85,7 +86,9 @@ export function ChallengesList() {
               <span className="date-label">Fin:</span>
               <span className="date-value">{new Date(challenge.end_date).toLocaleDateString('fr-FR')}</span>
             </div>
-            <button className="challenge-button">Participer</button>
+            <Link to={`/challenges/${challenge.id}`}>
+              <button className="challenge-button">Voir le défi</button>
+            </Link>
           </div>
         ))}
       </div>
