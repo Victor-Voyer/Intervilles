@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Register({ onSubmit }) {
   const [username, setUsername] = useState('')
@@ -9,6 +10,9 @@ function Register({ onSubmit }) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [promoId, setPromoId] = useState('')
   const [error, setError] = useState('')
+  const navigate = useNavigate()
+
+  const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
   const isPasswordStrong = (value) => {
     const hasLength = value.length >= 8
@@ -18,7 +22,7 @@ function Register({ onSubmit }) {
     return hasLength && hasLetter && hasDigit && hasSpecial
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (!username || !firstName || !lastName || !email || !password || !confirmPassword || !promoId) {
@@ -53,9 +57,26 @@ function Register({ onSubmit }) {
       promo_id: parsedPromo,
     }
 
-    onSubmit?.(payload)
-    // Remplace par ton appel API
-    console.log('register', payload)
+    try {
+      const response = await fetch(`${API_BASE}/intervilles/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        setError(data.message || "Impossible de créer le compte")
+        return
+      }
+
+      const data = await response.json()
+      onSubmit?.(data)
+      navigate('/login')
+    } catch (err) {
+      console.error('Register error', err)
+      setError('Erreur réseau, réessaie plus tard')
+    }
   }
 
   return (

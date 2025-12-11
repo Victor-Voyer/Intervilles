@@ -7,8 +7,8 @@ const { User } = db;
 const emailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.NODEMAILER_USER,        
-    pass: process.env.NODEMAILER_PASSWORD,    
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASSWORD,
   },
 });
 
@@ -23,7 +23,9 @@ export const sendVerificationEmail = async (user) => {
   const PORT = process.env.PORT || 5000;
   const baseUrl = process.env.APP_URL || `http://localhost:${PORT}`;
 
-  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${emailToken}`;
+  const frontBase = process.env.APP_FRONT_URL || process.env.APP_URL || 'http://localhost:5173';
+  const normalizedFront = frontBase.replace(/\/$/, '');
+  const verificationUrl = `${normalizedFront}/verify-email?token=${emailToken}`;
 
   const mailOptions = {
     from: process.env.NODEMAILER_USER || 'no-reply@intervilles.local',

@@ -1,21 +1,44 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Login({ onSubmit }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
   const [error, setError] = useState('')
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email || !password) {
       setError('Email et mot de passe requis')
       return
     }
     setError('')
-    onSubmit?.({ email, password, remember })
-    // Remplace par ton appel API
-    console.log('login', { email, password, remember })
+
+    try {
+      const response = await fetch(`${API_BASE}/intervilles/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}))
+        setError(data.message || 'Identifiants invalides')
+        return
+      }
+
+      const data = await response.json()
+      localStorage.setItem('token', data.token)
+      onSubmit?.({ email, password, remember, user: data.user, token: data.token })
+      navigate('/profile')
+    } catch (err) {
+      console.error('Login error', err)
+      setError('Erreur réseau, réessaie plus tard')
+    }
   }
 
   return (

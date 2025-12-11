@@ -5,15 +5,10 @@ function Nav() {
 
   return (
     <nav className="nav">
-      <NavLink to="/" className={linkClass} end>
-        Accueil
-      </NavLink>
-      <NavLink to="/profile" className={linkClass}>
-        Profil
-      </NavLink>
-      <NavLink to="/login" className={linkClass}>
-        Connexion
-      </NavLink>
+      <NavLink to="/" className={linkClass} end>Accueil</NavLink>
+      <NavLink to="/profile" className={linkClass}>Profil</NavLink>
+      <NavLink to="/login" className={linkClass}>Connexion</NavLink>
+      <NavLink to="/register" className={linkClass}>Inscription</NavLink>
     </nav>
   )
 }

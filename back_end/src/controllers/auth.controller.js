@@ -1,4 +1,5 @@
 import { registerUser, authenticateUser, createAuthToken } from '../services/auth.service.js';
+import { sendVerificationEmail, verifyEmailToken } from '../services/emailVerification.service.js';
 
 export const register = async (req, res) => {
   try {
@@ -12,6 +13,8 @@ export const register = async (req, res) => {
       password,
       promo_id,
     });
+
+    await sendVerificationEmail(user);
 
     return res.status(201).json({
       id: user.id,
@@ -44,5 +47,31 @@ export const login = async (req, res) => {
   } catch (err) {
     console.error('Login error:', err);
     return res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({ message: 'Token manquant' });
+    }
+
+    const user = await verifyEmailToken(token);
+
+    return res.json({
+      message: 'Email vérifié',
+      user: {
+        id: user.id,
+        email: user.email,
+        verified_at: user.verified_at,
+      },
+    });
+  } catch (err) {
+    console.error('Verify email error:', err);
+    const status = err.status || 500;
+    const message = err.message || 'Erreur serveur';
+    return res.status(status).json({ message });
   }
 };
