@@ -11,6 +11,7 @@ function App() {
           <h1 className="logo-text">Intervilles</h1>
           <nav className="nav">
             <a href="#home" className="nav-link">Accueil</a>
+            <a href="#login" className="nav-link">Connexion</a>
             <a href="#challenges" className="nav-link">Défis</a>
             <a href="#about" className="nav-link">À propos</a>
             <a href="#contact" className="nav-link">Contact</a>
