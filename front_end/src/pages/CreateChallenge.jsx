@@ -23,24 +23,14 @@ export default function CreateChallenge() {
   const [fetchingCats, setFetchingCats] = useState(true)
 
   useEffect(() => {
-    // Derive categories from existing challenges (since backend has no endpoint)
+    // Fetch categories from the dedicated endpoint
     const load = async () => {
       try {
         setFetchingCats(true)
-        const resp = await fetch('http://localhost:3000/intervilles/challenges')
-        if (!resp.ok) throw new Error('Impossible de charger les défis')
+        const resp = await fetch('http://localhost:3000/intervilles/challenges/categories')
+        if (!resp.ok) throw new Error('Impossible de charger les catégories')
         const data = await resp.json()
-        const list = (data?.data || [])
-        const cats = []
-        const seen = new Set()
-        for (const ch of list) {
-          const cat = ch?.category
-          if (cat && cat.id != null && cat.name && !seen.has(cat.id)) {
-            seen.add(cat.id)
-            cats.push({ id: cat.id, name: cat.name })
-          }
-        }
-        cats.sort((a,b) => a.name.localeCompare(b.name))
+        const cats = (data?.data || [])
         setCategories(cats)
         if (cats.length > 0) setCategoryId(String(cats[0].id))
       } catch (e) {
@@ -154,18 +144,7 @@ export default function CreateChallenge() {
             </select>
           </label>
         ) : (
-          <label>
-            ID Catégorie
-            <input
-              type="number"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              placeholder="Entrez l'ID de la catégorie"
-              required
-              min={1}
-            />
-            <small>Aucune liste de catégories disponible. Entrez l'ID connu.</small>
-          </label>
+          <p className="error">Aucune catégorie disponible. Vérifiez votre base de données.</p>
         )}
 
         <div className="dates-row">

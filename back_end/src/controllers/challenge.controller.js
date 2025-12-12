@@ -203,3 +203,19 @@ export const deleteChallengeController = async (req, res) => {
     return handleError(res, err);
   }
 };
+
+export const getCategories = async (req, res) => {
+  try {
+    const categories = await Category.findAll({
+      order: [['name', 'ASC']],
+    });
+
+    return res.json({
+      success: true,
+      message: 'Catégories récupérées avec succès',
+      data: categories,
+    });
+  } catch (err) {
+    return handleError(res, err);
+  }
+};
