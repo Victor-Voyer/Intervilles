@@ -9,7 +9,15 @@ function Register({ onSubmit }) {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [promoId, setPromoId] = useState('')
-  const [promos, setPromos] = useState([])
+  const [promos, setPromos] = useState([
+    { id: 1, name: 'Bordeaux' },
+    { id: 2, name: 'Paris' },
+    { id: 3, name: 'Lyon' },
+    { id: 4, name: 'Marseille' },
+    { id: 5, name: 'Toulouse' },
+    { id: 6, name: 'Cannes' },
+    { id: 7, name: 'Martigues' },
+  ])
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
