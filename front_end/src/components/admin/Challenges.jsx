@@ -2,23 +2,24 @@ const formatDateTime = (value) => {
   if (!value) return ''
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return ''
-  return date.toLocaleString('fr-FR', {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  })
+  return date.toLocaleDateString('fr-FR', { dateStyle: 'short' })
 }
 
-const toSlug = (value) => (value ? value.toLowerCase().replace(/\s+/g, '-') : '')
+const statusLabels = {
+  open: 'Ouvert',
+  in_progress: 'En cours',
+  closed: 'Fermé',
+}
 
-const defaultCounters = { total: 0, open: 0, inProgress: 0, resolved: 0 }
+const defaultCounters = { total: 0, open: 0, inProgress: 0, closed: 0 }
 
 function Challenges({ challenges = [], onBackClick, onViewChallenge }) {
   const counters = challenges.reduce(
-    (acc, ticket) => {
-      const status = ticket?.status?.status?.value
-      if (status === 'Open') acc.open += 1
-      if (status === 'In Progress') acc.inProgress += 1
-      if (status === 'Resolved') acc.resolved += 1
+    (acc, challenge) => {
+      const status = challenge?.status
+      if (status === 'open') acc.open += 1
+      if (status === 'in_progress') acc.inProgress += 1
+      if (status === 'closed') acc.closed += 1
       acc.total += 1
       return acc
     },
@@ -73,8 +74,8 @@ function Challenges({ challenges = [], onBackClick, onViewChallenge }) {
                 <div className="stat-label">En cours</div>
               </div>
               <div className="stat-card">
-                <div className="stat-number">{counters.resolved}</div>
-                <div className="stat-label">Terminés</div>
+                <div className="stat-number">{counters.closed}</div>
+                <div className="stat-label">Fermés</div>
               </div>
             </div>
 
@@ -85,22 +86,22 @@ function Challenges({ challenges = [], onBackClick, onViewChallenge }) {
                     <th>ID</th>
                     <th>Titre</th>
                     <th>Auteur</th>
+                    <th>Catégorie</th>
                     <th>Statut</th>
-                    <th>Type</th>
-                    <th>Stack</th>
+                    <th>Début</th>
+                    <th>Fin</th>
                     <th>Créé le</th>
-                    <th>Commentaires</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {challenges.map((challenge, index) => {
-                    const statusValue = challenge?.status?.status?.value ?? ''
-                    const typeValue = challenge?.type?.value ?? ''
-                    const stackValue = challenge?.stack?.value ?? ''
-                    const createdAt = formatDateTime(challenge?.createdAt)
-                    const commentsCount = challenge?.comments?.length ?? 0
+                    const statusValue = challenge?.status ?? ''
+                    const createdAt = formatDateTime(challenge?.created_at || challenge?.createdAt)
+                    const startDate = formatDateTime(challenge?.start_date)
+                    const endDate = formatDateTime(challenge?.end_date)
                     const user = challenge?.user ?? {}
+                    const category = challenge?.category ?? {}
 
                     return (
                       <tr className="ticket-row" key={challenge?.id ?? `challenge-${index}`}>
@@ -112,29 +113,20 @@ function Challenges({ challenges = [], onBackClick, onViewChallenge }) {
                         </td>
                         <td className="ticket-user">
                           <div className="user-info">
-                            <div className="user-name">
-                              {user.firstName ?? ''} {user.lastName ?? ''}
-                            </div>
-                            <div className="user-email">{user.email ?? ''}</div>
-                            {user.nickname ? <div className="user-nickname">@{user.nickname}</div> : null}
+                            <div className="user-name">{user.username ?? ''}</div>
                           </div>
                         </td>
+                        <td className="ticket-category">
+                          <span className="stack-badge">{category?.name ?? '—'}</span>
+                        </td>
                         <td className="ticket-status">
-                          <span className={`status-badge status-${toSlug(statusValue)}`}>{statusValue || '—'}</span>
-                        </td>
-                        <td className="ticket-type">
-                          <span className={`type-badge type-${toSlug(typeValue)}`}>{typeValue || '—'}</span>
-                        </td>
-                        <td className="ticket-stack">
-                          <span className="stack-badge">{stackValue || '—'}</span>
-                        </td>
-                        <td className="ticket-created">{createdAt || '—'}</td>
-                        <td className="ticket-comments">
-                          <span className="comments-count">
-                            <i className="fas fa-comments" aria-hidden="true"></i>
-                            {commentsCount}
+                          <span className={`status-badge status-${statusValue || 'unknown'}`}>
+                            {statusLabels[statusValue] ?? statusValue ?? '—'}
                           </span>
                         </td>
+                        <td className="ticket-start">{startDate || '—'}</td>
+                        <td className="ticket-end">{endDate || '—'}</td>
+                        <td className="ticket-created">{createdAt || '—'}</td>
                         <td className="ticket-actions">
                           <div className="action-buttons">
                             <button

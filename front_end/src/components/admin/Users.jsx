@@ -1,9 +1,17 @@
 const defaultCounters = { total: 0, pending: 0 }
 
+function formatDate(value) {
+  if (!value) return ''
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return ''
+  return d.toLocaleDateString('fr-FR', { dateStyle: 'short' })
+}
+
 function Users({ users = [], onBackClick, onValidateAccounts, onViewUser, onEditUser }) {
   const counters = users.reduce(
     (acc, user) => {
-      if (!user?.isValidated) acc.pending += 1
+      const isValidated = Boolean(user?.validated_at)
+      if (!isValidated) acc.pending += 1
       acc.total += 1
       return acc
     },
@@ -28,8 +36,8 @@ function Users({ users = [], onBackClick, onValidateAccounts, onViewUser, onEdit
   return (
     <div className="admin-container">
       <div className="admin-header">
-        <h1 className="admin-title">User Management</h1>
-        <p className="admin-subtitle">Manage and monitor all application users</p>
+        <h1 className="admin-title">Gestion des utilisateurs</h1>
+        <p className="admin-subtitle">Suivre et gérer les comptes de l&apos;application</p>
         {renderBackButton()}
       </div>
 
@@ -74,15 +82,19 @@ function Users({ users = [], onBackClick, onValidateAccounts, onViewUser, onEdit
             <div className="empty-state-icon">
               <i className="fas fa-users" aria-hidden="true"></i>
             </div>
-            <h3>No users found</h3>
-            <p>There are currently no users in the system.</p>
+            <h3>Aucun utilisateur</h3>
+            <p>Il n&apos;y a actuellement aucun utilisateur.</p>
           </div>
         ) : (
           <>
             <div className="users-stats">
               <div className="stat-card">
                 <div className="stat-number">{counters.total}</div>
-                <div className="stat-label">Total Users</div>
+                <div className="stat-label">Utilisateurs</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">{counters.pending}</div>
+                <div className="stat-label">En attente</div>
               </div>
             </div>
 
@@ -91,44 +103,34 @@ function Users({ users = [], onBackClick, onValidateAccounts, onViewUser, onEdit
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Avatar</th>
-                    <th>User Info</th>
-                    <th>Contact</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Tickets</th>
-                    <th>Comments</th>
+                    <th>Username</th>
+                    <th>Nom complet</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Promo</th>
+                    <th>Validation compte</th>
+                    <th>Email vérifié</th>
+                    <th>Créé le</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user, index) => {
-                    const roleTitle = user?.role?.title ?? ''
-                    const ticketsCount = user?.tickets?.length ?? 0
-                    const commentsCount = user?.comments?.length ?? 0
-                    const isValidated = Boolean(user?.isValidated)
-
-                    const renderAvatar = () => {
-                      if (user?.avatar) {
-                        return <img src={user.avatar} alt={user.nickname ?? ''} className="avatar-img" />
-                      }
-                      return (
-                        <div className="avatar-placeholder">
-                          <i className="fas fa-user" aria-hidden="true"></i>
-                        </div>
-                      )
-                    }
+                    const roleName = user?.role?.name ?? ''
+                    const promoName = user?.promo?.name ?? ''
+                    const isValidated = Boolean(user?.validated_at)
+                    const isVerified = Boolean(user?.verified_at)
+                    const createdAt = formatDate(user?.created_at || user?.createdAt)
 
                     return (
                       <tr className="user-row" key={user?.id ?? `user-${index}`}>
                         <td className="user-id">#{user?.id ?? '—'}</td>
-                        <td className="user-avatar">{renderAvatar()}</td>
+                        <td className="user-username">{user?.username ?? ''}</td>
                         <td className="user-info">
                           <div className="user-details">
                             <div className="user-name">
-                              {user?.firstName ?? ''} {user?.lastName ?? ''}
+                              {user?.first_name ?? ''} {user?.last_name ?? ''}
                             </div>
-                            {user?.nickname ? <div className="user-nickname">@{user.nickname}</div> : null}
                           </div>
                         </td>
                         <td className="user-contact">
@@ -137,13 +139,12 @@ function Users({ users = [], onBackClick, onValidateAccounts, onViewUser, onEdit
                           </div>
                         </td>
                         <td className="user-role">
-                          {roleTitle ? (
-                            <span className={`role-badge role-${roleTitle.toLowerCase()}`}>{roleTitle}</span>
-                          ) : (
-                            <span className="role-badge role-pending" style={{ background: '#ffc107', color: '#000' }}>
-                              <i className="fas fa-clock" aria-hidden="true"></i> Non validé
-                            </span>
-                          )}
+                          <span className={`role-badge role-${(roleName || 'pending').toLowerCase()}`}>
+                            {roleName || '—'}
+                          </span>
+                        </td>
+                        <td className="user-promo">
+                          <span className="stack-badge">{promoName || '—'}</span>
                         </td>
                         <td className="user-status">
                           {isValidated ? (
@@ -156,35 +157,35 @@ function Users({ users = [], onBackClick, onValidateAccounts, onViewUser, onEdit
                             </span>
                           )}
                         </td>
-                        <td className="user-tickets">
-                          <span className="tickets-count">
-                            <i className="fas fa-ticket-alt" aria-hidden="true"></i>
-                            {ticketsCount}
-                          </span>
+                        <td className="user-verified">
+                          {isVerified ? (
+                            <span className="status-badge" style={{ background: '#d1fae5', color: '#065f46', padding: '6px 12px', borderRadius: 20, fontSize: 12 }}>
+                              <i className="fas fa-envelope-open" aria-hidden="true"></i> Vérifié
+                            </span>
+                          ) : (
+                            <span className="status-badge" style={{ background: '#fee2e2', color: '#991b1b', padding: '6px 12px', borderRadius: 20, fontSize: 12 }}>
+                              <i className="fas fa-envelope" aria-hidden="true"></i> Non vérifié
+                            </span>
+                          )}
                         </td>
-                        <td className="user-comments">
-                          <span className="comments-count">
-                            <i className="fas fa-comments" aria-hidden="true"></i>
-                            {commentsCount}
-                          </span>
-                        </td>
+                        <td className="user-created">{createdAt || '—'}</td>
                         <td className="user-actions">
                           <div className="action-buttons">
                             <button
                               type="button"
                               className="btn-admin btn-sm btn-info"
-                              title="View User"
+                              title="Voir l'utilisateur"
                               onClick={() => onViewUser?.(user)}
                             >
-                              <i className="fas fa-eye" aria-hidden="true"></i> View
+                              <i className="fas fa-eye" aria-hidden="true"></i> Voir
                             </button>
                             <button
                               type="button"
                               className="btn-admin btn-sm btn-warning"
-                              title="Edit User"
+                              title="Éditer l'utilisateur"
                               onClick={() => onEditUser?.(user)}
                             >
-                              <i className="fas fa-edit" aria-hidden="true"></i> Edit
+                              <i className="fas fa-edit" aria-hidden="true"></i> Éditer
                             </button>
                           </div>
                         </td>
