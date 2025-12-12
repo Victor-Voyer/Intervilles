@@ -35,6 +35,11 @@ function Login({ onSubmit }) {
 
       const data = await response.json()
       localStorage.setItem('token', data.token)
+      if (data?.user?.role?.name) {
+        localStorage.setItem('role', data.user.role.name)
+      } else if (data?.user?.role) {
+        localStorage.setItem('role', data.user.role)
+      }
       onSubmit?.({ email, password, remember, user: data.user, token: data.token })
       navigate('/profile')
     } catch (err) {
