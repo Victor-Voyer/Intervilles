@@ -7,10 +7,12 @@ import {
   createChallengeController,
   updateChallengeController,
   deleteChallengeController,
+  getCategories,
 } from '../controllers/challenge.controller.js';
 
 const router = Router();
 
+router.get('/categories', getCategories);
 router.get('/', getChallenges);
 router.get('/:id', getChallenge);
 

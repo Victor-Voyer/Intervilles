@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import VerifyEmail from './pages/VerifyEmail'
 import ChallengeDetail from './pages/ChallengeDetail'
+import CreateChallenge from './pages/CreateChallenge'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/challenges/:id" element={<ChallengeDetail />} />
+          <Route path="/challenges/create" element={<CreateChallenge />} />
 
         </Routes>
       </main>

@@ -20,7 +20,9 @@ function Nav() {
   return (
     <nav className="nav">
       <button type="button" className="nav-link" onClick={() => navigate('/')}>Accueil</button>
-      <button type="button" className="nav-link" onClick={() => navigate('/create-challenge')}>Créer</button>
+      {isLogged && (
+        <button type="button" className="nav-link" onClick={() => navigate('/challenges/create')}>Créer</button>
+      )}
       <button type="button" className="nav-link" onClick={() => navigate('/profile')}>Profil</button>
       {isAdminOrMod ? <button type="button" className="nav-link" onClick={() => navigate('/dashboard')}>Dashboard</button> : null}
       {!isLogged ? (
