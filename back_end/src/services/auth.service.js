@@ -61,13 +61,6 @@ export const authenticateUser = async ({ email, password }) => {
     throw error;
   }
 
-  // valid modo
-  if (!user.validated_at) {
-    const error = new Error('Compte en attente de validation');
-    error.status = 403;
-    throw error;
-  }
-
   return user;
 };
 

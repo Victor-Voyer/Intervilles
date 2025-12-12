@@ -20,6 +20,10 @@ export default (sequelize, DataTypes) => {
         foreignKey: 'user_id',
         as: 'participations',
       });
+      User.hasMany(models.Challenge, {
+        foreignKey: 'user_id',
+        as: 'created_challenges',
+      });
       User.hasMany(models.ChatMessage, {
         foreignKey: 'user_id',
         as: 'chat_messages',

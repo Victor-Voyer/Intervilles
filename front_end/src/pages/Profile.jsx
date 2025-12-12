@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import '../styles/Profile.css'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/intervilles'
+// Normalise l’URL API (préfixe /intervilles) sans slash final
+const API_BASE = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000/intervilles').replace(/\/$/, '')
 
 function Profile() {
   const [profile, setProfile] = useState(null)
@@ -20,7 +21,7 @@ function Profile() {
 
       try {
         setLoading(true)
-        const response = await fetch(`${API_BASE}/profile/me`, {
+        const response = await fetch(`${API_BASE}/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

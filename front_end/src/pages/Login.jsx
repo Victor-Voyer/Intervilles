@@ -9,7 +9,8 @@ function Login({ onSubmit }) {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+  // Normalise l’URL API (préfixe /intervilles) sans slash final
+  const API_BASE = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000/intervilles').replace(/\/$/, '')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -20,7 +21,7 @@ function Login({ onSubmit }) {
     setError('')
 
     try {
-      const response = await fetch(`${API_BASE}/intervilles/auth/login`, {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

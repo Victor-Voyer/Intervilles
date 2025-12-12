@@ -12,7 +12,8 @@ function Register({ onSubmit }) {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+  // Normalise l’URL API (préfixe /intervilles) sans slash final
+  const API_BASE = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000/intervilles').replace(/\/$/, '')
 
   const isPasswordStrong = (value) => {
     const hasLength = value.length >= 8
@@ -58,7 +59,7 @@ function Register({ onSubmit }) {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/intervilles/auth/register`, {
+      const response = await fetch(`${API_BASE}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

@@ -22,6 +22,22 @@ export const findUserById = async (id) => {
     include: [
       { model: Role, as: 'role', attributes: ['id', 'name'] },
       { model: Promo, as: 'promo', attributes: ['id', 'name', 'year'] },
+      {
+        model: User.sequelize.models.Participation,
+        as: 'participations',
+        include: [
+          {
+            model: User.sequelize.models.Challenge,
+            as: 'challenge',
+            include: [{ model: User.sequelize.models.Category, as: 'category', attributes: ['id', 'name'] }],
+          },
+        ],
+      },
+      {
+        model: User.sequelize.models.Challenge,
+        as: 'created_challenges',
+        include: [{ model: User.sequelize.models.Category, as: 'category', attributes: ['id', 'name'] }],
+      },
     ],
   });
 };
