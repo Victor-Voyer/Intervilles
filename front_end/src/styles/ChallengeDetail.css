@@ -132,6 +132,52 @@
   padding-top: 2rem;
   border-top: 2px solid #e5e7eb;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.participation-editor {
+  width: 100%;
+  max-width: 800px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  text-align: left;
+}
+
+.participation-editor h3 {
+  margin: 0 0 0.35rem;
+  color: #1f2937;
+  font-size: 1.25rem;
+}
+
+.participation-note {
+  margin: 0 0 0.75rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.rich-text-editor {
+  width: 100%;
+  color: #000;
+}
+
+.rich-text-editor .ck-content {
+  color: #000 !important;
+}
+
+.rich-text-editor .ck-editor {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.rich-text-editor .ck-editor__editable_inline {
+  min-height: 180px;
+  padding: 1rem;
 }
 
 .participate-button {

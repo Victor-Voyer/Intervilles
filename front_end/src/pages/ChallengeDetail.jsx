@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import CkEditor from '../components/CkEditor'
 import '../styles/ChallengeDetail.css'
 
 export default function ChallengeDetail() {
@@ -8,9 +9,14 @@ export default function ChallengeDetail() {
   const [challenge, setChallenge] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [participationContent, setParticipationContent] = useState('')
 
   useEffect(() => {
     fetchChallenge()
+  }, [id])
+
+  useEffect(() => {
+    setParticipationContent('')
   }, [id])
 
   const fetchChallenge = async () => {
@@ -36,7 +42,7 @@ export default function ChallengeDetail() {
 
   const handleParticipate = () => {
     // Logique de participation à implémenter plus tard
-    console.log('Participer au défi:', challenge.id)
+    console.log('Participer au défi:', challenge.id, participationContent)
   }
 
   const handleBack = () => {
@@ -145,6 +151,17 @@ export default function ChallengeDetail() {
 
           {challenge.status === 'open' && (
             <div className="challenge-actions">
+              <div className="participation-editor">
+                <h3>Rédigez votre proposition</h3>
+                <p className="participation-note">
+                  Utilisez l’éditeur pour préparer votre participation avant de l’envoyer.
+                </p>
+                <CkEditor
+                  value={participationContent}
+                  placeholder="Décrivez votre approche, vos idées ou vos livrables..."
+                  onChange={setParticipationContent}
+                />
+              </div>
               <button onClick={handleParticipate} className="participate-button">
                 Participer au défi
               </button>
