@@ -10,6 +10,7 @@ import Register from './pages/Register'
 import VerifyEmail from './pages/VerifyEmail'
 import ChallengeDetail from './pages/ChallengeDetail'
 import CreateChallenge from './pages/CreateChallenge'
+import UpdateChallenge from './pages/UpdateChallenge'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/challenges/:id" element={<ChallengeDetail />} />
           <Route path="/challenges/create" element={<CreateChallenge />} />
+          <Route path="/challenges/:id/edit" element={<UpdateChallenge />} />
 
         </Routes>
       </main>
