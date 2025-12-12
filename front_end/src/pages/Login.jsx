@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 function Login({ onSubmit }) {
   const [email, setEmail] = useState('')
