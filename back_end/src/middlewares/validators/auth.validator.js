@@ -15,7 +15,13 @@ const passwordSchema = z
   );
 
 const registerSchema = z.object({
-  email: z.string({ required_error: 'Email requis' }).email('Email invalide'),
+  email: z
+  .string({ required_error: 'Email requis' })
+  .email('Email invalide')
+  .refine(
+    (value) => value.toLowerCase().endsWith('@laplateforme.io'),
+    'Email invalide'),
+
   password: passwordSchema,
   username: z
     .string({ required_error: 'Nom d’utilisateur requis' })
