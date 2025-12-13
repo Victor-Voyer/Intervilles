@@ -177,17 +177,6 @@ export default function CreateChallenge() {
         </button>
       </form>
 
-      <style>{`
-        .challenge-create-section { max-width: 720px; margin: 0 auto; padding: 24px; }
-        .challenge-create-form { display: grid; gap: 16px; }
-        .challenge-create-form label { display: grid; gap: 8px; }
-        .challenge-create-form input, .challenge-create-form textarea, .challenge-create-form select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-        .dates-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .error { color: #b00020; }
-        .success { color: #0a8; }
-        button { padding: 10px 14px; border-radius: 6px; border: none; background: #1f7aec; color: white; cursor: pointer; }
-        button[disabled] { opacity: 0.7; cursor: not-allowed; }
-      `}</style>
     </section>
   )
 }
