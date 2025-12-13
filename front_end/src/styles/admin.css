@@ -106,12 +106,18 @@ body {
   color: #fff;
   box-shadow: var(--shadow);
   transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  text-align: center;
+}
+
+.action-buttons{
+  display: flex;
+  /* justify-content: center; */
+  gap: 1rem;
 }
 
 .btn-admin:hover,
 .btn:hover {
   transform: translateY(-1px);
-  background: var(--primary-2);
   box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
   color: white;
 }
