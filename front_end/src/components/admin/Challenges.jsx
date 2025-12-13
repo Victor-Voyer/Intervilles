@@ -42,7 +42,8 @@ function Challenges({ challenges = [], onBackClick, onViewChallenge }) {
   }
 
   return (
-    <div className="admin-container">
+    <div className="admin-container">      
+
       <div className="admin-header">
         <h1 className="admin-title">Challenge Management</h1>
         <p className="admin-subtitle">Gérer et suivre tous les challenges</p>

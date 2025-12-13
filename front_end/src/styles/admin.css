@@ -24,12 +24,13 @@ body {
 
 /* Layout admin générique */
 .admin-container {
-  max-width: 1800px;
+  width: 100%;   
   margin: 24px auto;
   padding: 0 24px 56px;
 }
 
 .admin-header {
+  text-align: center;
   background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -45,7 +46,7 @@ body {
 }
 
 .admin-subtitle {
-  margin: 6px 0 0;
+  margin: 1rem 0 ;
   color: var(--muted);
 }
 
@@ -57,6 +58,11 @@ body {
   margin-top: 20px;
 }
 
+.admin-icon {
+  width: 6rem;
+  height: 6rem;
+}
+
 .admin-card {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -66,6 +72,7 @@ body {
   text-decoration: none;
   box-shadow: var(--shadow);
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  text-align: center;
 }
 
 .admin-card:hover {
@@ -106,6 +113,7 @@ body {
   transform: translateY(-1px);
   background: var(--primary-2);
   box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
+  color: white;
 }
 
 .btn-secondary {
