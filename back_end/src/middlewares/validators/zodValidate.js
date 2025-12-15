@@ -9,7 +9,7 @@ export const validateBody = (schema) => (req, res, next) => {
       return res.status(400).json({
         success: false,
         message: 'Données invalides',
-        errors: err.errors.map((e) => ({
+        errors: err.issues.map((e) => ({
           path: e.path.join('.'),
           message: e.message,
         })),
