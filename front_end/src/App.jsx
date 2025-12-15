@@ -16,6 +16,7 @@ import AdminUsers from './pages/AdminUsers'
 import UsersAdmin from './components/admin/Users'
 import ValidateAccount from './components/admin/ValidateAccount'
 import './styles/admin.css'
+import UpdateChallenge from './pages/UpdateChallenge'
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/admin/challenges" element={<AdminChallenges />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/validate-account" element={<ValidateAccount />} />
+          <Route path="/challenges/:id/edit" element={<UpdateChallenge />} />
 
         </Routes>
       </main>

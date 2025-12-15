@@ -81,9 +81,25 @@ export default function ChallengeDetail() {
     )
   }
 
+  const canEdit = () => {
+    const userId = localStorage.getItem('userId')
+    const role = localStorage.getItem('role')?.toUpperCase()
+    return (
+      userId && challenge?.user_id && 
+      (String(userId) === String(challenge.user_id) || role === 'ADMIN' || role === 'MODERATOR')
+    )
+  }
+
   return (
     <div className="challenge-detail-container">
-      <button onClick={handleBack} className="back-button">← Retour</button>
+      <div className="header-actions">
+        <button onClick={handleBack} className="back-button">← Retour</button>
+        {canEdit() && (
+          <button onClick={() => navigate(`/challenges/${id}/edit`)} className="edit-button">
+            ✏️ Modifier
+          </button>
+        )}
+      </div>
       
       <div className="challenge-detail-card">
         <div className="challenge-detail-header">
