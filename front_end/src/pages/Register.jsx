@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 function Register({ onSubmit }) {
@@ -9,11 +9,35 @@ function Register({ onSubmit }) {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [promoId, setPromoId] = useState('')
+  const [promos, setPromos] = useState([
+    { id: 1, name: 'Bordeaux' },
+    { id: 2, name: 'Paris' },
+    { id: 3, name: 'Lyon' },
+    { id: 4, name: 'Marseille' },
+    { id: 5, name: 'Toulouse' },
+    { id: 6, name: 'Cannes' },
+    { id: 7, name: 'Martigues' },
+  ])
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
   // Normalise l’URL API (préfixe /intervilles) sans slash final
   const API_BASE = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000/intervilles').replace(/\/$/, '')
+
+  useEffect(() => {
+    const fetchPromos = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/intervilles/promos`)
+        if (response.ok) {
+          const data = await response.json()
+          setPromos(data)
+        }
+      } catch (err) {
+        console.error('Erreur lors de la récupération des promos', err)
+      }
+    }
+    fetchPromos()
+  }, [API_BASE])
 
   const isPasswordStrong = (value) => {
     const hasLength = value.length >= 8
@@ -154,15 +178,19 @@ function Register({ onSubmit }) {
           </label>
           <label className="auth-label">
             Promo
-            <input
-              type="number"
+            <select
               value={promoId}
               onChange={(e) => setPromoId(e.target.value)}
-              placeholder="1"
               className="auth-input"
               required
-              min="1"
-            />
+            >
+              <option value="">Sélectionne ta promo</option>
+              {promos.map((promo) => (
+                <option key={promo.id} value={promo.id}>
+                  {promo.name} - {promo.year}
+                </option>
+              ))}
+            </select>
           </label>
           {error ? <div className="auth-error">{error}</div> : null}
           <button type="submit" className="auth-submit">
