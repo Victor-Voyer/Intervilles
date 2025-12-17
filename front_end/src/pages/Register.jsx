@@ -27,7 +27,7 @@ function Register({ onSubmit }) {
   useEffect(() => {
     const fetchPromos = async () => {
       try {
-        const response = await fetch(`${API_BASE}/intervilles/promos`)
+        const response = await fetch(`${API_BASE}/promos`)
         if (response.ok) {
           const data = await response.json()
           setPromos(data)
