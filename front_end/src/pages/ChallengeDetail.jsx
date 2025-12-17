@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import CkEditor from '../components/CkEditor'
-import Comments from '../components/Comments'
 import '../styles/ChallengeDetail.css'
+import '../styles/Comments.css'
 
 export default function ChallengeDetail() {
   const { id } = useParams()
@@ -11,6 +11,15 @@ export default function ChallengeDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [participationContent, setParticipationContent] = useState('')
+  const [comments, setComments] = useState([])
+  const [commentsLoading, setCommentsLoading] = useState(true)
+  const [commentsError, setCommentsError] = useState(null)
+  const [commentContent, setCommentContent] = useState('')
+  const [commentSubmitting, setCommentSubmitting] = useState(false)
+
+  const token = localStorage.getItem('token')
+  const userId = localStorage.getItem('userId')
+  const userRole = localStorage.getItem('role')?.toUpperCase()
 
   useEffect(() => {
     fetchChallenge()
@@ -18,6 +27,11 @@ export default function ChallengeDetail() {
 
   useEffect(() => {
     setParticipationContent('')
+    setCommentContent('')
+  }, [id])
+
+  useEffect(() => {
+    fetchComments()
   }, [id])
 
   const fetchChallenge = async () => {
@@ -39,6 +53,110 @@ export default function ChallengeDetail() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const fetchComments = async () => {
+    try {
+      setCommentsLoading(true)
+      const response = await fetch(`http://localhost:3000/intervilles/challenges/${id}/comments`)
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des commentaires')
+      }
+
+      const data = await response.json()
+      setComments(data.data || [])
+      setCommentsError(null)
+    } catch (err) {
+      console.error('Error fetching comments:', err)
+      setCommentsError(err.message)
+    } finally {
+      setCommentsLoading(false)
+    }
+  }
+
+  const extractPlainText = (html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html')
+    return doc.body.textContent || ''
+  }
+
+  const hasCommentContent = () => extractPlainText(commentContent).trim().length > 0
+
+  const handleAddComment = async () => {
+    if (!token) {
+      alert('Vous devez être connecté pour commenter')
+      return
+    }
+
+    if (!hasCommentContent()) {
+      alert('Le commentaire ne peut pas être vide')
+      return
+    }
+
+    try {
+      setCommentSubmitting(true)
+      const response = await fetch(`http://localhost:3000/intervilles/challenges/${id}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content: commentContent }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Erreur lors de l'ajout du commentaire")
+      }
+
+      setCommentContent('')
+      await fetchComments()
+      setCommentsError(null)
+    } catch (err) {
+      console.error('Error adding comment:', err)
+      setCommentsError(err.message)
+    } finally {
+      setCommentSubmitting(false)
+    }
+  }
+
+  const handleDeleteComment = async (commentId) => {
+    if (!token) {
+      alert('Vous devez être connecté pour supprimer un commentaire')
+      return
+    }
+
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/intervilles/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Erreur lors de la suppression du commentaire')
+      }
+
+      await fetchComments()
+      setCommentsError(null)
+    } catch (err) {
+      console.error('Error deleting comment:', err)
+      alert(err.message)
+    }
+  }
+
+  const canDeleteComment = (comment) => {
+    if (!userId) return false
+    const isAuthor = String(comment.user_id) === String(userId)
+    const isModerator = userRole === 'MODERATOR'
+    const isAdmin = userRole === 'ADMIN'
+    return isAuthor || isModerator || isAdmin
   }
 
   const handleParticipate = () => {
@@ -83,11 +201,9 @@ export default function ChallengeDetail() {
   }
 
   const canEdit = () => {
-    const userId = localStorage.getItem('userId')
-    const role = localStorage.getItem('role')?.toUpperCase()
     return (
       userId && challenge?.user_id && 
-      (String(userId) === String(challenge.user_id) || role === 'ADMIN' || role === 'MODERATOR')
+      (String(userId) === String(challenge.user_id) || userRole === 'ADMIN' || userRole === 'MODERATOR')
     )
   }
 
@@ -186,7 +302,74 @@ export default function ChallengeDetail() {
           )}
 
           {/* Section des commentaires */}
-          <Comments challengeId={id} />
+          <div className="comments-section">
+            <h2 className="comments-title">Commentaires ({comments.length})</h2>
+
+            {commentsError && (
+              <div className="comments-error">
+                <p>{commentsError}</p>
+              </div>
+            )}
+
+            {token ? (
+              <div className="comment-form">
+                <CkEditor
+                  value={commentContent}
+                  placeholder="Écrivez votre commentaire..."
+                  onChange={setCommentContent}
+                  onSubmit={handleAddComment}
+                  submitLabel={commentSubmitting ? 'Envoi...' : 'Envoyer'}
+                  submitDisabled={commentSubmitting || !hasCommentContent()}
+                />
+              </div>
+            ) : (
+              <div className="comment-login-prompt">
+                <p>Vous devez être connecté pour commenter</p>
+              </div>
+            )}
+
+            <div className="comments-list">
+              {commentsLoading ? (
+                <p className="comments-loading">Chargement des commentaires...</p>
+              ) : comments.length === 0 ? (
+                <p className="no-comments">Aucun commentaire pour le moment</p>
+              ) : (
+                comments.map((comment) => (
+                  <div key={comment.id} className="comment-item">
+                    <div className="comment-header">
+                      <span className="comment-author">
+                        {comment.user?.username || 'Utilisateur inconnu'}
+                      </span>
+                      <span className="comment-date">
+                        {comment.created_at
+                          ? new Date(comment.created_at).toLocaleDateString('fr-FR', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })
+                          : ''}
+                      </span>
+                    </div>
+                    <div
+                      className="comment-content"
+                      dangerouslySetInnerHTML={{ __html: comment.content }}
+                    />
+                    {canDeleteComment(comment) && (
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="comment-delete-button"
+                        title="Supprimer le commentaire"
+                      >
+                        🗑️ Supprimer
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

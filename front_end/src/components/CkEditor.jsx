@@ -1,7 +1,16 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
-export default function CkEditor({ value = '', onChange, placeholder = '' }) {
+export default function CkEditor({
+  value = '',
+  onChange,
+  placeholder = '',
+  onSubmit,
+  submitLabel = 'Envoyer',
+  submitDisabled = false,
+}) {
+  const showSubmit = typeof onSubmit === 'function'
+
   return (
     <div className="rich-text-editor">
       <CKEditor
@@ -31,6 +40,19 @@ export default function CkEditor({ value = '', onChange, placeholder = '' }) {
           }
         }}
       />
+
+      {showSubmit && (
+        <div className="rich-text-actions">
+          <button
+            type="button"
+            className="comment-submit-button"
+            onClick={onSubmit}
+            disabled={submitDisabled}
+          >
+            {submitLabel}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
