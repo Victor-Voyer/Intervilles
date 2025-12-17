@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import CkEditor from '../components/CkEditor'
+import Comments from '../components/Comments'
 import '../styles/ChallengeDetail.css'
 
 export default function ChallengeDetail() {
@@ -183,6 +184,9 @@ export default function ChallengeDetail() {
               </button>
             </div>
           )}
+
+          {/* Section des commentaires */}
+          <Comments challengeId={id} />
         </div>
       </div>
     </div>
