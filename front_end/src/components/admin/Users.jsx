@@ -102,6 +102,7 @@ function Users({ users = [], onBackClick, onValidateAccounts, onViewUser, onEdit
               <table className="users-table">
                 <thead>
                   <tr>
+                    <th>Avatar</th>
                     <th>ID</th>
                     <th>Username</th>
                     <th>Nom complet</th>
@@ -124,6 +125,13 @@ function Users({ users = [], onBackClick, onValidateAccounts, onViewUser, onEdit
 
                     return (
                       <tr className="user-row" key={user?.id ?? `user-${index}`}>
+                        <td>
+                          <img
+                            src={user?.avatar_url || '/default-avatar.png'}
+                            alt="avatar"
+                            className="avatar-circle"
+                          />
+                        </td>
                         <td className="user-id">#{user?.id ?? '—'}</td>
                         <td className="user-username">{user?.username ?? ''}</td>
                         <td className="user-info">

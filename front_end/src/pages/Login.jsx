@@ -35,11 +35,21 @@ function Login({ onSubmit }) {
 
       const data = await response.json()
       localStorage.setItem('token', data.token)
+
+      if (data?.user?.id) localStorage.setItem('userId', String(data.user.id))
+
       if (data?.user?.role?.name) {
         localStorage.setItem('role', data.user.role.name)
       } else if (data?.user?.role) {
         localStorage.setItem('role', data.user.role)
       }
+
+      if (data?.user?.avatar_url) {
+        localStorage.setItem('avatar_url', data.user.avatar_url)
+      } else {
+        localStorage.removeItem('avatar_url')
+      }
+
       onSubmit?.({ email, password, remember, user: data.user, token: data.token })
       navigate('/profile')
     } catch (err) {

@@ -32,8 +32,12 @@ function Profile() {
         }
 
         const payload = await response.json()
-        setProfile(payload.data || null)
+        const data = payload.data || null
+
+        setProfile(data)
         setError('')
+
+        if (data?.avatar_url) localStorage.setItem('avatar_url', data.avatar_url)
       } catch (err) {
         console.error('Profile fetch error:', err)
         setError(err.message)
@@ -82,6 +86,17 @@ function Profile() {
         <p className="profile-subtitle">Retrouve tes informations et tes défis.</p>
       </div>
 
+      <div className="profile-card">
+        <h3>Avatar</h3>
+        <div className="profile-avatar-wrapper">
+          <img
+            src={profile.avatar_url || '/default-avatar.png'}
+            alt="avatar"
+            className="profile-avatar-rect"
+          />
+        </div>
+      </div>
+
       <div className="profile-grid">
         <div className="profile-card">
           <h3>Informations personnelles</h3>
@@ -91,6 +106,7 @@ function Profile() {
             <span><strong>Nom:</strong> {profile.last_name} {profile.first_name}</span>
             <span><strong>Promo:</strong> {profile.promo?.name ?? '—'} ({profile.promo?.year ?? '—'})</span>
             <span><strong>Rôle:</strong> {profile.role?.name ?? '—'}</span>
+            <span><strong>Créé le:</strong> {formatDate(profile.created_at || profile.createdAt)}</span>
           </div>
         </div>
       </div>

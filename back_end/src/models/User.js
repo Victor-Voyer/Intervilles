@@ -88,6 +88,11 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: DataTypes.NOW,
       },
+      avatar: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+      },
+
     },
     {
       sequelize,
