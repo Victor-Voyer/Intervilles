@@ -8,6 +8,11 @@ export default (sequelize, DataTypes) => {
         foreignKey: 'user_id',
         as: 'user',
       });
+
+      ChatMessage.belongsTo(models.Promo, {
+        foreignKey: 'promo_id',
+        as: 'promo',
+      });
     }
   }
   ChatMessage.init(
@@ -15,10 +20,20 @@ export default (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
+        references: { 
           model: 'users',
-          key: 'id',
+          key: 'id', 
         },
+      },
+      promo_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: { model: 'promos', key: 'id' },
+      },
+      scope: {
+        type: DataTypes.ENUM('global', 'promo'),
+        allowNull: false,
+        defaultValue: 'global',
       },
       content: {
         type: DataTypes.TEXT,
@@ -39,6 +54,6 @@ export default (sequelize, DataTypes) => {
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     }
-);
+  );
   return ChatMessage;
-};  
+};

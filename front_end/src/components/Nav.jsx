@@ -23,8 +23,19 @@ function Nav() {
       {isLogged && (
         <button type="button" className="nav-link" onClick={() => navigate('/challenges/create')}>Créer</button>
       )}
-      <button type="button" className="nav-link" onClick={() => navigate('/profile')}>Profil</button>
-      {isAdminOrMod ? <button type="button" className="nav-link" onClick={() => navigate('/admin')}>Dashboard</button> : null}
+
+      <button type="button" className="nav-link" onClick={() => navigate('/chat')}>Chat</button>
+      <button type="button" className="nav-link" onClick={() => navigate('/profile')}>
+        <img
+          src={avatarUrl || '/default-avatar.png'}
+          className="nav-avatar"
+        />
+        Profil
+      </button>
+
+      {isAdminOrMod ? (<button type="button" className="nav-link" onClick={() => navigate('/admin')}>Dashboard</button>
+      ) : null}
+
       {!isLogged ? (
         <>
           <button type="button" className="nav-link" onClick={() => navigate('/login')}>Connexion</button>

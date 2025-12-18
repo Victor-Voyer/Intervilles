@@ -17,6 +17,7 @@ import UsersAdmin from './components/admin/Users'
 import ValidateAccount from './components/admin/ValidateAccount'
 import './styles/admin.css'
 import UpdateChallenge from './pages/UpdateChallenge'
+import Chat from './pages/Chat'
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/validate-account" element={<ValidateAccount />} />
           <Route path="/challenges/:id/edit" element={<UpdateChallenge />} />
+          <Route path="/chat" element={<Chat />} />
 
         </Routes>
       </main>
